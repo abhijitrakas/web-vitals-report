@@ -263,7 +263,7 @@ async function getReportRowsFromAPI(reportRequest, controller) {
   progress.total += datesInRange.length;
 
   try {
-    report = await makeReportingAPIRequest(reportRequest, controller.signal);
+    report = await makeReportingAPIRequest(reportRequest, controller.signal) || {};
   } catch (error) {
     // If there is an error, abort all in-progress requests for this report.
     controller.abort();
@@ -274,9 +274,9 @@ async function getReportRowsFromAPI(reportRequest, controller) {
     }
   }
 
-  const totalRows = report.data.rowCount;
+  const totalRows = report?.data?.rowCount;
 
-  const {samplesReadCounts, samplingSpaceSizes} = report.data;
+  const {samplesReadCounts, samplingSpaceSizes} = report?.data || {};
   const sampleRate = samplesReadCounts &&
       (samplesReadCounts[0] / samplingSpaceSizes[0]);
 
@@ -317,7 +317,7 @@ async function getReportRowsFromAPI(reportRequest, controller) {
     //throw new WebVitalsError('row_limit_exceeded');
   }
 
-  if (report.data.rows) {
+  if (report?.data?.rows) {
     rows = rows.concat(report.data.rows);
   }
 
@@ -326,7 +326,7 @@ async function getReportRowsFromAPI(reportRequest, controller) {
   setTimeout(() => progress.cur += datesInRange.length, 0);
 
   // If the response shows a paginated report, fetch the rest in parallel.
-  if (report.nextPageToken) {
+  if (report?.nextPageToken) {
     let rowCount = rows && rows.length || 0;
     const reportRequests = [];
     while (rowCount < totalRows) {
@@ -354,7 +354,7 @@ async function getReportRowsFromAPI(reportRequest, controller) {
 
   for (const row of rows) {
     // If the data in the report is "golden" and not sampled, mark it cacheable.
-    if (report.data.isDataGolden && !isSampled) {
+    if (report?.data?.isDataGolden && !isSampled) {
       cacheableRows.add(row);
     }
 
