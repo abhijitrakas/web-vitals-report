@@ -89,7 +89,8 @@ export async function getWebVitalsData(state, opts) {
     // reduce the date range or add filters) and manually combine the data
     // yourself.
     if (metric !== 'LCP' && metric !== 'FID' && metric !== 'CLS') {
-      throw new WebVitalsError('unexpected_metric', metric);
+      // throw new WebVitalsError('unexpected_metric', metric);
+      continue;
     }
 
     const metricData = data.metrics[metric];
