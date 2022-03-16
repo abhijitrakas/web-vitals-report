@@ -314,7 +314,7 @@ async function getReportRowsFromAPI(reportRequest, controller) {
   // throw an error because Google Analytics will truncate all responses
   // with than 1M rows, making the data useless.
   if (totalRows >= 1e6) {
-    //throw new WebVitalsError('row_limit_exceeded');
+    throw new WebVitalsError('row_limit_exceeded');
   }
 
   if (report?.data?.rows) {
